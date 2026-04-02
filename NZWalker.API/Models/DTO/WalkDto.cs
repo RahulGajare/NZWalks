@@ -16,7 +16,7 @@ namespace NZWalker.API.Models.DTO
         public Guid RegionId { get; set; }
 
         //Navigation Properties
-        public Difficulty Difficulty { get; set; }
-        public Region Region { get; set; }
+        public DifficultyDto Difficulty { get; set; }
+        public RegionDto Region { get; set; }
     }
 }
