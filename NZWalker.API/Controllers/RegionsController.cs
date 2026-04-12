@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NZWalker.API.CustomActionFilters;
 using NZWalker.API.Models.Domain;
 using NZWalker.API.Models.DTO;
 using NZWalker.API.Respositories;
@@ -49,34 +50,37 @@ namespace NZWalker.API.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionDto)
         {
-            var regionDomainModel = mapper.Map<Region>(addRegionDto);
+                var regionDomainModel = mapper.Map<Region>(addRegionDto);
 
-            await regionRepository.CreateAsync(regionDomainModel);
+                await regionRepository.CreateAsync(regionDomainModel);
 
-            var regionDto = mapper.Map<RegionDto>(regionDomainModel);
+                var regionDto = mapper.Map<RegionDto>(regionDomainModel);
 
-            return CreatedAtAction(nameof(GetRegionById), new { id = regionDto.Id }, regionDto);
+                return CreatedAtAction(nameof(GetRegionById), new { id = regionDto.Id }, regionDto);
+
         }
 
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateRegion([FromRoute]Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
-        { 
-           var regionDopmainModel = mapper.Map<Region>(updateRegionRequestDto);
+        {
+                var regionDopmainModel = mapper.Map<Region>(updateRegionRequestDto);
 
-            regionDopmainModel =  await regionRepository.UpdateAsync(id, regionDopmainModel);
+                regionDopmainModel = await regionRepository.UpdateAsync(id, regionDopmainModel);
 
-            if (regionDopmainModel == null)
-            {
-                return NotFound();
-            }
+                if (regionDopmainModel == null)
+                {
+                    return NotFound();
+                }
 
-            var regionDto = mapper.Map<RegionDto>(regionDopmainModel);
+                var regionDto = mapper.Map<RegionDto>(regionDopmainModel);
 
-            return Ok(regionDto);
+                return Ok(regionDto); 
 
         }
 

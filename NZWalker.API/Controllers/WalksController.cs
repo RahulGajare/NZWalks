@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NZWalker.API.CustomActionFilters;
 using NZWalker.API.Models.Domain;
 using NZWalker.API.Models.DTO;
 using NZWalker.API.Respositories;
@@ -21,18 +22,19 @@ namespace NZWalker.API.Controllers
     
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto)
         {
 
-            var walkDomainModel = _mapper.Map<Walk>(addWalkRequestDto);
+                var walkDomainModel = _mapper.Map<Walk>(addWalkRequestDto);
 
-            var createdWalk = await _walkRepository.CreateAsync(walkDomainModel);
+                var createdWalk = await _walkRepository.CreateAsync(walkDomainModel);
 
-            var walkDto = _mapper.Map<WalkDto>(createdWalk);
+                var walkDto = _mapper.Map<WalkDto>(createdWalk);
 
-            // Return 201 Created with a Location header containing the new resource id
-            return Created($"/api/Walks/{walkDto.Id}", walkDto);
-
+                // Return 201 Created with a Location header containing the new resource id
+                return Created($"/api/Walks/{walkDto.Id}", walkDto);
+               
         }
 
         [HttpGet]
@@ -62,19 +64,19 @@ namespace NZWalker.API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkRequestDto updateWalkRequestDto)
         {
-            var walkDomain = _mapper.Map<Walk>(updateWalkRequestDto);
+                var walkDomain = _mapper.Map<Walk>(updateWalkRequestDto);
 
-             walkDomain = await _walkRepository.UpdateAsync(id, walkDomain);
+                walkDomain = await _walkRepository.UpdateAsync(id, walkDomain);
 
-            if (walkDomain == null)
-            {
-                return NotFound();
-            }
+                if (walkDomain == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(_mapper.Map<WalkDto>(walkDomain));
-
+                return Ok(_mapper.Map<WalkDto>(walkDomain));
 
         }
 
