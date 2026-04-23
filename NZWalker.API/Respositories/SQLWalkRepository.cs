@@ -22,10 +22,20 @@ namespace NZWalker.API.Respositories
 
        
 
-        public async Task<List<Walk>> GetAllAsync()
+        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
         {
-            var walks =  await dbContext.Walks.Include(w => w.Region).Include(w => w.Difficulty).ToListAsync();
-            return walks;
+            var walks =   dbContext.Walks.Include(w => w.Region).Include(w => w.Difficulty).AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(w => w.Name.Contains(filterQuery));
+                }
+            }
+
+            return await walks.ToListAsync();
+
         }
 
         public async Task<Walk> GetByIdAsync(Guid id)
